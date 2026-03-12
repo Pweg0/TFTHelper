@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: "Completed 01-data-pipeline 01-04-PLAN.md (checkpoint: awaiting human verify)"
-last_updated: "2026-03-12T22:38:32.723Z"
+stopped_at: Completed 02-overlay-window 02-01-PLAN.md
+last_updated: "2026-03-12T23:44:55.215Z"
 last_activity: 2026-03-12 — Roadmap created, phases derived from 14 requirements
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 8
+  completed_plans: 5
   percent: 25
 ---
 
@@ -54,6 +54,7 @@ Progress: [███░░░░░░░] 25%
 | Phase 01-data-pipeline P03 | 3 | 2 tasks | 6 files |
 | Phase 01-data-pipeline P02 | 15 | 6 tasks | 6 files |
 | Phase 01-data-pipeline P04 | 8 | 2 tasks | 7 files |
+| Phase 02-overlay-window P01 | 3 | 1 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,7 @@ Progress: [███░░░░░░░] 25%
 - [Phase 01-data-pipeline]: Startup triggered on did-finish-load (not app.whenReady) so renderer is listening before first IPC message arrives
 - [Phase 01-data-pipeline]: Store initialized in index.ts and shared with registerIpcHandlers — single source of truth for app config
 - [Phase 01-data-pipeline]: Icon download and meta scrape are non-fatal — app proceeds to waiting screen even if either fails
+- [Phase 02-overlay-window]: BoardStateParser: champion list uses single-element array per allPlayers entry; missing championStats treated as eliminated (hp=0)
 
 ### Pending Todos
 
@@ -87,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T22:38:32.719Z
-Stopped at: Completed 01-data-pipeline 01-04-PLAN.md (checkpoint: awaiting human verify)
+Last session: 2026-03-12T23:44:55.210Z
+Stopped at: Completed 02-overlay-window 02-01-PLAN.md
 Resume file: None
