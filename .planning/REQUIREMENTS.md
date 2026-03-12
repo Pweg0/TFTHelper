@@ -62,26 +62,26 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | — | Pending |
-| DATA-02 | — | Pending |
-| DATA-03 | — | Pending |
-| DATA-04 | — | Pending |
-| OVER-01 | — | Pending |
-| OVER-02 | — | Pending |
-| OVER-03 | — | Pending |
-| SCOU-01 | — | Pending |
-| SCOU-02 | — | Pending |
-| SCOU-03 | — | Pending |
-| RECO-01 | — | Pending |
-| RECO-02 | — | Pending |
-| RECO-03 | — | Pending |
-| RECO-04 | — | Pending |
+| DATA-01 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Pending |
+| DATA-03 | Phase 1 | Pending |
+| DATA-04 | Phase 2 | Pending |
+| OVER-01 | Phase 2 | Pending |
+| OVER-02 | Phase 3 | Pending |
+| OVER-03 | Phase 3 | Pending |
+| SCOU-01 | Phase 3 | Pending |
+| SCOU-02 | Phase 3 | Pending |
+| SCOU-03 | Phase 3 | Pending |
+| RECO-01 | Phase 4 | Pending |
+| RECO-02 | Phase 4 | Pending |
+| RECO-03 | Phase 4 | Pending |
+| RECO-04 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 14 total
-- Mapped to phases: 0
-- Unmapped: 14 ⚠️
+- Mapped to phases: 14
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-12*
-*Last updated: 2026-03-12 after initial definition*
+*Last updated: 2026-03-12 — traceability filled after roadmap creation*
