@@ -106,10 +106,15 @@ export async function runStartupSequence(win: BrowserWindow): Promise<void> {
     console.warn('[Startup] Failed to load static data:', err);
   }
 
-  // 5. Download icons (lazy, non-fatal)
+  // 5. Download icons — only champions and traits for now (items/augments are too many and mostly 404)
   sendStatus(win, 'download-icons', 'Downloading icons...');
   try {
-    await downloadIcons(set, extractedData);
+    await downloadIcons(set, {
+      champions: extractedData.champions,
+      traits: extractedData.traits,
+      items: [],
+      augments: [],
+    });
   } catch (err) {
     console.warn('[Startup] Icon download failed (non-fatal):', err);
   }

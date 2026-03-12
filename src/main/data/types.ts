@@ -32,12 +32,11 @@ export type Trait = z.infer<typeof TraitSchema>;
 
 // Item schema and type
 export const ItemSchema = z.object({
-  id: z.number(),
+  apiName: z.string(),
   name: z.string(),
   desc: z.string(),
   icon: z.string(),
-  from: z.array(z.number()).optional(),
-  composition: z.array(z.number()).optional(),
+  composition: z.array(z.string()).optional(),
 });
 
 export type Item = z.infer<typeof ItemSchema>;
@@ -48,7 +47,6 @@ export const AugmentSchema = z.object({
   name: z.string(),
   desc: z.string(),
   icon: z.string(),
-  tier: z.number().int().min(1).max(3).optional(),
 });
 
 export type Augment = z.infer<typeof AugmentSchema>;

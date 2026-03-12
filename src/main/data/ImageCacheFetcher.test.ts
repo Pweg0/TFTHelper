@@ -113,7 +113,7 @@ describe('ImageCacheFetcher', () => {
       const urls = calls.map((c) => c[0] as string);
 
       expect(urls).toContain(
-        'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/ux/tft/champions/tft13_ahri.tft_set13.png'
+        'https://raw.communitydragon.org/latest/game/assets/ux/tft/champions/tft13_ahri.tft_set13.png'
       );
     });
 

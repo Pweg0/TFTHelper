@@ -81,7 +81,7 @@ describe('TraitSchema', () => {
 
 describe('ItemSchema', () => {
   const validItem = {
-    id: 1,
+    apiName: 'TFT_Item_BFSword',
     name: "B.F. Sword",
     desc: '+10 Attack Damage',
     icon: 'ASSETS/Items/BFSword.png',
@@ -92,19 +92,13 @@ describe('ItemSchema', () => {
     expect(result.success).toBe(true);
   });
 
-  it('parses item with optional from array', () => {
-    const withFrom = { ...validItem, from: [1, 2] };
-    const result = ItemSchema.safeParse(withFrom);
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.from).toEqual([1, 2]);
-    }
-  });
-
-  it('parses item with optional composition array', () => {
-    const withComposition = { ...validItem, composition: [3, 4] };
+  it('parses item with optional composition array of strings', () => {
+    const withComposition = { ...validItem, composition: ['TFT_Item_BFSword', 'TFT_Item_NeedlesslyLargeRod'] };
     const result = ItemSchema.safeParse(withComposition);
     expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.composition).toEqual(['TFT_Item_BFSword', 'TFT_Item_NeedlesslyLargeRod']);
+    }
   });
 
   it('rejects item missing name', () => {
@@ -127,18 +121,9 @@ describe('AugmentSchema', () => {
     expect(result.success).toBe(true);
   });
 
-  it('accepts augment with optional tier', () => {
-    const withTier = { ...validAugment, tier: 1 };
-    const result = AugmentSchema.safeParse(withTier);
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data.tier).toBe(1);
-    }
-  });
-
-  it('rejects augment with tier outside 1-3', () => {
-    const invalidTier = { ...validAugment, tier: 5 };
-    const result = AugmentSchema.safeParse(invalidTier);
+  it('rejects augment missing apiName', () => {
+    const { apiName: _apiName, ...invalid } = validAugment;
+    const result = AugmentSchema.safeParse(invalid);
     expect(result.success).toBe(false);
   });
 });

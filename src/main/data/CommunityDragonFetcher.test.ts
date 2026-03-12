@@ -61,14 +61,14 @@ const validTrait2 = {
 };
 
 const validItem1 = {
-  id: 1,
+  apiName: 'TFT_Item_BFSword',
   name: 'B.F. Sword',
   desc: 'Grants attack damage.',
   icon: 'ASSETS/UX/TFT/Items/BFSword.png',
 };
 
 const validItem2 = {
-  id: 2,
+  apiName: 'TFT_Item_ChainVest',
   name: 'Chain Vest',
   desc: 'Grants armor.',
   icon: 'ASSETS/UX/TFT/Items/ChainVest.png',
@@ -79,7 +79,6 @@ const validAugment1 = {
   name: 'Gold Rush',
   desc: 'Gain gold.',
   icon: 'ASSETS/UX/TFT/Augments/GoldRush.png',
-  tier: 1,
 };
 
 const validAugment2 = {
@@ -87,9 +86,9 @@ const validAugment2 = {
   name: 'Silver Lining',
   desc: 'Gain silver.',
   icon: 'ASSETS/UX/TFT/Augments/SilverLining.png',
-  tier: 2,
 };
 
+// CommunityDragon puts items AND augments in the same top-level `items` array
 const mockCommunityDragonData = {
   setData: [
     {
@@ -107,8 +106,7 @@ const mockCommunityDragonData = {
       traits: [validTrait1, validTrait2],
     },
   ],
-  items: [validItem1, validItem2],
-  augments: [validAugment1, validAugment2],
+  items: [validItem1, validItem2, validAugment1, validAugment2],
 };
 
 describe('CommunityDragonFetcher', () => {

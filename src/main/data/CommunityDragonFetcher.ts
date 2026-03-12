@@ -78,11 +78,23 @@ export function extractCurrentSetData(rawData: unknown): {
   const rawTraits = Array.isArray(currentSet.traits) ? currentSet.traits : [];
   const traits = validateArray(rawTraits, TraitSchema, 'trait');
 
-  // Items and augments live at the top level
-  const rawItems = Array.isArray(data.items) ? data.items : [];
-  const items = validateArray(rawItems, ItemSchema, 'item');
+  // Items and augments share the same top-level `items` array.
+  // Augments have apiName containing "Augment" or "Teamup".
+  // Real items are everything else (components, completed items, etc.).
+  const allRawItems = Array.isArray(data.items) ? data.items : [];
 
-  const rawAugments = Array.isArray(data.augments) ? data.augments : [];
+  const rawItems: unknown[] = [];
+  const rawAugments: unknown[] = [];
+  for (const entry of allRawItems) {
+    const apiName = (entry as Record<string, unknown>)?.apiName as string | undefined;
+    if (apiName && (apiName.includes('Augment') || apiName.includes('Teamup'))) {
+      rawAugments.push(entry);
+    } else {
+      rawItems.push(entry);
+    }
+  }
+
+  const items = validateArray(rawItems, ItemSchema, 'item');
   const augments = validateArray(rawAugments, AugmentSchema, 'augment');
 
   console.log(

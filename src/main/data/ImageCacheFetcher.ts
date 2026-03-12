@@ -5,7 +5,7 @@ import { getImageCachePath } from './DataCache';
 import type { Champion, Trait, Item, Augment } from './types';
 
 const CDRAGON_ICON_BASE_URL =
-  'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default';
+  'https://raw.communitydragon.org/latest/game';
 
 /**
  * Derives the local file path for a given CommunityDragon icon URL.
@@ -72,33 +72,35 @@ export async function downloadIcons(
   let skipped = 0;
   let failed = 0;
 
-  for (const iconPath of uniqueIcons) {
-    const localPath = getIconPath(set, iconPath);
+  // Download in parallel batches of 20 for speed
+  const BATCH_SIZE = 20;
+  for (let i = 0; i < uniqueIcons.length; i += BATCH_SIZE) {
+    const batch = uniqueIcons.slice(i, i + BATCH_SIZE);
+    await Promise.all(batch.map(async (iconPath) => {
+      const localPath = getIconPath(set, iconPath);
 
-    // Skip if already cached
-    try {
-      await fs.access(localPath);
-      skipped++;
-      continue;
-    } catch {
-      // File does not exist — proceed to download
-    }
+      // Skip if already cached
+      try {
+        await fs.access(localPath);
+        skipped++;
+        return;
+      } catch {
+        // File does not exist — proceed to download
+      }
 
-    // Download from CDN
-    const cdnUrl = buildCdnUrl(iconPath);
-    try {
-      const response = await axios.get(cdnUrl, {
-        responseType: 'arraybuffer',
-        timeout: 10000,
-      });
-      await fs.writeFile(localPath, response.data as Buffer);
-      downloaded++;
-    } catch (err) {
-      failed++;
-      console.warn(
-        `[ImageCacheFetcher] Failed to download icon: ${iconPath} (${(err as Error).message})`
-      );
-    }
+      // Download from CDN
+      const cdnUrl = buildCdnUrl(iconPath);
+      try {
+        const response = await axios.get(cdnUrl, {
+          responseType: 'arraybuffer',
+          timeout: 10000,
+        });
+        await fs.writeFile(localPath, response.data as Buffer);
+        downloaded++;
+      } catch (err) {
+        failed++;
+      }
+    }));
   }
 
   console.log(
