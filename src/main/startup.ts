@@ -6,6 +6,8 @@ import { downloadStaticData, loadStaticData, extractCurrentSetData } from './dat
 import { downloadIcons } from './data/ImageCacheFetcher';
 import { refreshMetaIfStale } from './data/MetaScraper';
 import { GameWatcher } from './game/GameWatcher';
+import { createOverlayWindow } from './overlay/OverlayWindow';
+import { BoardStatePoller } from './overlay/BoardStatePoller';
 
 // TODO: Detect locale from Riot client process args (--locale=pt_BR) via LCU API.
 // For now, default to en_us.
@@ -130,28 +132,39 @@ export async function runStartupSequence(win: BrowserWindow): Promise<void> {
   // 7. Signal ready and start game watcher
   sendStatus(win, 'ready', 'Ready! Waiting for TFT game...');
 
+  // Create overlay window once at startup — attachByTitle can only be called once per process.
+  // The overlay shows/hides via attach/detach events from electron-overlay-window.
+  const overlayWin = createOverlayWindow();
+  const poller = new BoardStatePoller();
+
   const watcher = new GameWatcher({
     onGameStart: (data) => {
       if (!win.isDestroyed()) {
         win.webContents.send('game-started', data);
       }
+      // Begin 1s board state polling and push to overlay
+      poller.start(overlayWin);
     },
     onGameEnd: () => {
       if (!win.isDestroyed()) {
         win.webContents.send('game-ended');
       }
+      // Stop polling but keep last data displayed in overlay (locked decision)
+      poller.stop();
     },
   });
 
   watcher.start();
 
-  // Clean up watcher when the window is closed
+  // Clean up watcher and poller when the main window is closed
   win.on('closed', () => {
     watcher.stop();
+    poller.stop();
   });
 
   // Expose store via IPC for shutdown cleanup (optional)
   ipcMain.once('app-quit', () => {
     watcher.stop();
+    poller.stop();
   });
 }

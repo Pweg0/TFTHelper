@@ -1,9 +1,31 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { PlayerPanel } from './components/PlayerPanel';
+
+/**
+ * DisplayPlayer view model — matches the shape produced by parseBoardState.
+ * Defined inline to avoid importing from the main process.
+ */
+interface DisplayPlayer {
+  summonerName: string;
+  hp: number;
+  maxHp: number;
+  level: number;
+  champions: string[];
+  isLocalPlayer: boolean;
+  gold?: number;
+}
 
 export default function OverlayApp(): JSX.Element {
+  const [players, setPlayers] = useState<DisplayPlayer[]>([]);
+
   useEffect(() => {
     // Re-establish click-through state after any reload (research pitfall 6)
     window.overlayApi.toggleClickThrough(true);
+
+    // Register board-state-update listener from main process
+    window.overlayApi.onBoardStateUpdate((data) => {
+      setPlayers(data as DisplayPlayer[]);
+    });
   }, []);
 
   return (
@@ -15,6 +37,7 @@ export default function OverlayApp(): JSX.Element {
         pointerEvents: 'none',
       }}
     >
+      {/* Interactive panel zone — hover disables click-through */}
       <div
         style={{
           position: 'fixed',
@@ -24,22 +47,17 @@ export default function OverlayApp(): JSX.Element {
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          gap: 4,
-          padding: 8,
-          pointerEvents: 'none',
+          justifyContent: 'center',
+          gap: 2,
+          padding: '8px 4px',
+          pointerEvents: 'auto',
         }}
         onMouseEnter={() => window.overlayApi.toggleClickThrough(false)}
         onMouseLeave={() => window.overlayApi.toggleClickThrough(true)}
       >
-        <span
-          style={{
-            color: 'white',
-            textShadow: '0 1px 3px rgba(0,0,0,0.8)',
-            fontSize: 14,
-          }}
-        >
-          Overlay ready
-        </span>
+        {players.map((player) => (
+          <PlayerPanel player={player} key={player.summonerName} />
+        ))}
       </div>
     </div>
   );
