@@ -13,6 +13,14 @@ export default defineConfig({
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
+    build: {
+      rollupOptions: {
+        input: {
+          preload: resolve('src/preload/preload.ts'),
+          overlayPreload: resolve('src/preload/overlayPreload.ts'),
+        },
+      },
+    },
   },
   renderer: {
     resolve: {
@@ -21,5 +29,13 @@ export default defineConfig({
       },
     },
     plugins: [react()],
+    build: {
+      rollupOptions: {
+        input: {
+          main: resolve('src/renderer/index.html'),
+          overlay: resolve('src/renderer/overlay/index.html'),
+        },
+      },
+    },
   },
 })
