@@ -45,7 +45,7 @@ Plans:
   2. Overlay does not steal focus or interfere with game input (mouse/keyboard pass-through works)
   3. App reads board state for all players in the match (comps, items, level, HP) from the Live Client API
   4. Board state updates automatically as the game progresses without manual refresh
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 
 Plans:
 - [ ] 02-01-PLAN.md — TFT board state types, Zod schemas, and parseBoardState function (TDD)
@@ -84,6 +84,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Data Pipeline | 4/4 | Complete   | 2026-03-12 |
-| 2. Overlay Window | 2/4 | In Progress|  |
+| 2. Overlay Window | 3/4 | In Progress|  |
 | 3. Scouting Panel | 0/TBD | Not started | - |
 | 4. Recommendation Engine | 0/TBD | Not started | - |

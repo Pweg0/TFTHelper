@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-overlay-window 02-02-PLAN.md
-last_updated: "2026-03-12T23:46:09.074Z"
+stopped_at: Completed 02-overlay-window 02-03-PLAN.md
+last_updated: "2026-03-12T23:51:14.030Z"
 last_activity: 2026-03-12 — Roadmap created, phases derived from 14 requirements
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 7
   percent: 25
 ---
 
@@ -56,6 +56,7 @@ Progress: [███░░░░░░░] 25%
 | Phase 01-data-pipeline P04 | 8 | 2 tasks | 7 files |
 | Phase 02-overlay-window P01 | 3 | 1 tasks | 4 files |
 | Phase 02-overlay-window P02 | 3 | 2 tasks | 10 files |
+| Phase 02-overlay-window PP03 | 3 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,9 @@ Progress: [███░░░░░░░] 25%
 - [Phase 02-overlay-window]: IPC handler set-ignore-mouse-events registered inside createOverlayWindow for test isolation with vi.clearAllMocks
 - [Phase 02-overlay-window]: overlayApi separate contextBridge world key from main api to prevent IPC channel collision
 - [Phase 02-overlay-window]: electron-overlay-window in externalizeDepsPlugin exclude — native addon must not be bundled by Vite
+- [Phase 02-overlay-window]: BoardStatePoller.start() clears existing interval first — prevents duplicate timer stacking on repeated calls
+- [Phase 02-overlay-window]: overlayWin created once before watcher.start() so overlay is ready before any game event fires; poller.start() called inside onGameStart
+- [Phase 02-overlay-window]: DisplayPlayer interface defined inline in overlay renderer — avoids cross-process type imports from main process
 
 ### Pending Todos
 
@@ -93,6 +97,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T23:46:09.066Z
-Stopped at: Completed 02-overlay-window 02-02-PLAN.md
+Last session: 2026-03-12T23:51:14.023Z
+Stopped at: Completed 02-overlay-window 02-03-PLAN.md
 Resume file: None
