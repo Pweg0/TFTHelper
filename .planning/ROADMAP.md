@@ -28,7 +28,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Champion, trait, item and augment data from CommunityDragon is downloaded and cached on first run
   3. Meta comp and winrate data is scraped from MetaTFT/tactics.tools at app startup and stored in a local cache file
   4. Cached data survives app restarts without re-downloading (cache invalidation on new patch)
-**Plans**: TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Electron scaffold, TypeScript types/Zod schemas, DataCache utility, Vitest config
+- [ ] 01-02-PLAN.md — CommunityDragon static data fetcher and patch version checker
+- [ ] 01-03-PLAN.md — Game detection polling (Live Client API) and meta build scraper (tactics.tools)
+- [ ] 01-04-PLAN.md — Startup orchestration, IPC handlers, splash screen, and waiting screen
 
 ### Phase 2: Overlay Window
 **Goal**: A transparent, always-on-top overlay is attached to the TFT game window and receives live board state
@@ -71,7 +77,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Pipeline | 0/TBD | Not started | - |
+| 1. Data Pipeline | 0/4 | Planning complete | - |
 | 2. Overlay Window | 0/TBD | Not started | - |
 | 3. Scouting Panel | 0/TBD | Not started | - |
 | 4. Recommendation Engine | 0/TBD | Not started | - |
