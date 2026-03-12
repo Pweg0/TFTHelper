@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 01-data-pipeline 01-03-PLAN.md
-last_updated: "2026-03-12T22:32:57.687Z"
+stopped_at: Completed 01-data-pipeline 01-02-PLAN.md
+last_updated: "2026-03-12T22:33:31.358Z"
 last_activity: 2026-03-12 — Roadmap created, phases derived from 14 requirements
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 4
-  completed_plans: 2
+  completed_plans: 3
   percent: 25
 ---
 
@@ -52,6 +52,7 @@ Progress: [███░░░░░░░] 25%
 *Updated after each plan completion*
 | Phase 01-data-pipeline P01 | 15 | 2 tasks | 16 files |
 | Phase 01-data-pipeline P03 | 3 | 2 tasks | 6 files |
+| Phase 01-data-pipeline P02 | 15 | 6 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,8 @@ Progress: [███░░░░░░░] 25%
 - [Phase 01-data-pipeline]: tactics.tools __NEXT_DATA__ path is pageProps.compositions — debug logging of pageProps keys on every scrape enables detection if path changes
 - [Phase 01-data-pipeline]: GameWatcher treats non-TFT game modes as no-game — onGameStart only fires when gameMode === TFT
 - [Phase 01-data-pipeline]: refreshMetaIfStale accepts a Store interface (get/set) rather than concrete electron-store for testability
+- [Phase 01-data-pipeline]: CDragon setData: current set selected by highest numeric set.number; items/augments at top-level JSON, not per-set
+- [Phase 01-data-pipeline]: CDragon CDN icon URL: lowercase full ASSETS/ path + replace .tex with .png under rcp-be-lol-game-data/global/default
 
 ### Pending Todos
 
@@ -80,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T22:32:57.684Z
-Stopped at: Completed 01-data-pipeline 01-03-PLAN.md
+Last session: 2026-03-12T22:33:31.356Z
+Stopped at: Completed 01-data-pipeline 01-02-PLAN.md
 Resume file: None
