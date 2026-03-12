@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 01-data-pipeline 01-01-PLAN.md
-last_updated: "2026-03-12T22:27:01.371Z"
+stopped_at: Completed 01-data-pipeline 01-03-PLAN.md
+last_updated: "2026-03-12T22:32:57.687Z"
 last_activity: 2026-03-12 — Roadmap created, phases derived from 14 requirements
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
+  completed_plans: 2
   percent: 25
 ---
 
@@ -51,6 +51,7 @@ Progress: [███░░░░░░░] 25%
 
 *Updated after each plan completion*
 | Phase 01-data-pipeline P01 | 15 | 2 tasks | 16 files |
+| Phase 01-data-pipeline P03 | 3 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,9 @@ Progress: [███░░░░░░░] 25%
 - [Phase 01-data-pipeline]: Scaffold created manually (create-electron-vite CLI is interactive-only, not automatable in non-TTY)
 - [Phase 01-data-pipeline]: MetaCompSchema includes optional itemPriorities and positioning for full data extraction from scraper
 - [Phase 01-data-pipeline]: DataCache readJsonFile returns null on ENOENT for safe cache-miss checks
+- [Phase 01-data-pipeline]: tactics.tools __NEXT_DATA__ path is pageProps.compositions — debug logging of pageProps keys on every scrape enables detection if path changes
+- [Phase 01-data-pipeline]: GameWatcher treats non-TFT game modes as no-game — onGameStart only fires when gameMode === TFT
+- [Phase 01-data-pipeline]: refreshMetaIfStale accepts a Store interface (get/set) rather than concrete electron-store for testability
 
 ### Pending Todos
 
@@ -76,6 +80,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T22:27:01.367Z
-Stopped at: Completed 01-data-pipeline 01-01-PLAN.md
+Last session: 2026-03-12T22:32:57.684Z
+Stopped at: Completed 01-data-pipeline 01-03-PLAN.md
 Resume file: None
