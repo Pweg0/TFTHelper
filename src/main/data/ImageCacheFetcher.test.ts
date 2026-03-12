@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as path from 'node:path';
 
+// Helper to normalize path separators for cross-platform assertions
+const normPath = (p: string) => p.replace(/\\/g, '/');
+
 // Mock axios
 vi.mock('axios');
 
@@ -67,13 +70,13 @@ describe('ImageCacheFetcher', () => {
   describe('getIconPath', () => {
     it('returns local path with .png extension replacing .tex', () => {
       const iconUrl = 'ASSETS/UX/TFT/Champions/TFT13_Ahri.TFT_Set13.tex';
-      const result = getIconPath('set13', iconUrl);
+      const result = normPath(getIconPath('set13', iconUrl));
       expect(result).toBe('/cache/images/set13/TFT13_Ahri.TFT_Set13.png');
     });
 
     it('returns local path preserving .png extension if already png', () => {
       const iconUrl = 'ASSETS/UX/TFT/Traits/Rebel.png';
-      const result = getIconPath('set13', iconUrl);
+      const result = normPath(getIconPath('set13', iconUrl));
       expect(result).toBe('/cache/images/set13/Rebel.png');
     });
 
@@ -122,7 +125,7 @@ describe('ImageCacheFetcher', () => {
 
       expect(mockedFs.writeFile).toHaveBeenCalledTimes(3);
       const writtenPaths = (mockedFs.writeFile as ReturnType<typeof vi.fn>).mock.calls.map(
-        (c) => c[0] as string
+        (c) => normPath(c[0] as string)
       );
       expect(writtenPaths[0]).toContain('/cache/images/set13/');
     });
