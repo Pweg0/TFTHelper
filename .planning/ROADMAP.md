@@ -31,10 +31,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 4/4 plans complete
 
 Plans:
-- [ ] 01-01-PLAN.md — Electron scaffold, TypeScript types/Zod schemas, DataCache utility, Vitest config
-- [ ] 01-02-PLAN.md — CommunityDragon static data fetcher and patch version checker
-- [ ] 01-03-PLAN.md — Game detection polling (Live Client API) and meta build scraper (tactics.tools)
-- [ ] 01-04-PLAN.md — Startup orchestration, IPC handlers, splash screen, and waiting screen
+- [x] 01-01-PLAN.md — Electron scaffold, TypeScript types/Zod schemas, DataCache utility, Vitest config
+- [x] 01-02-PLAN.md — CommunityDragon static data fetcher and patch version checker
+- [x] 01-03-PLAN.md — Game detection polling (Live Client API) and meta build scraper (tactics.tools)
+- [x] 01-04-PLAN.md — Startup orchestration, IPC handlers, splash screen, and waiting screen
 
 ### Phase 2: Overlay Window
 **Goal**: A transparent, always-on-top overlay is attached to the TFT game window and receives live board state
@@ -45,7 +45,13 @@ Plans:
   2. Overlay does not steal focus or interfere with game input (mouse/keyboard pass-through works)
   3. App reads board state for all players in the match (comps, items, level, HP) from the Live Client API
   4. Board state updates automatically as the game progresses without manual refresh
-**Plans**: TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — TFT board state types, Zod schemas, and parseBoardState function (TDD)
+- [ ] 02-02-PLAN.md — Overlay window infrastructure (electron-overlay-window, preload, renderer entry)
+- [ ] 02-03-PLAN.md — BoardStatePoller, startup wiring, and overlay React UI components
+- [ ] 02-04-PLAN.md — Live TFT game verification checkpoint
 
 ### Phase 3: Scouting Panel
 **Goal**: All player boards, items, levels and HP are visible in the overlay simultaneously in a usable layout
@@ -78,6 +84,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Data Pipeline | 4/4 | Complete   | 2026-03-12 |
-| 2. Overlay Window | 0/TBD | Not started | - |
+| 2. Overlay Window | 0/4 | Planning complete | - |
 | 3. Scouting Panel | 0/TBD | Not started | - |
 | 4. Recommendation Engine | 0/TBD | Not started | - |
