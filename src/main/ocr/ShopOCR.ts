@@ -11,14 +11,30 @@ const CONFIDENCE_THRESHOLD = 60;
 /**
  * Reads the 5-slot TFT shop using Tesseract.js OCR.
  *
- * Usage:
+ * Usage (standalone):
  *   const ocr = new ShopOCR();
  *   await ocr.initialize();
  *   const slots = await ocr.readShop(pngBuffer, width, height, matcher);
  *   await ocr.terminate();
+ *
+ * Usage (shared worker — OCRPipeline):
+ *   const ocr = new ShopOCR(sharedWorker);  // skip initialize()
+ *   const slots = await ocr.readShop(pngBuffer, width, height, matcher);
+ *   // terminate() is a no-op; the shared worker is managed by OCRPipeline
  */
 export class ShopOCR {
   private worker: Worker | null = null;
+  /** When true, terminate() is a no-op (worker lifetime is managed externally) */
+  private readonly workerIsShared: boolean;
+
+  constructor(sharedWorker?: Worker) {
+    if (sharedWorker !== undefined) {
+      this.worker = sharedWorker;
+      this.workerIsShared = true;
+    } else {
+      this.workerIsShared = false;
+    }
+  }
 
   /**
    * Creates and configures a persistent Tesseract.js worker.
@@ -110,9 +126,12 @@ export class ShopOCR {
 
   /**
    * Terminates the Tesseract worker and releases WASM resources.
+   *
+   * No-op when the worker was injected via constructor (shared worker pattern).
+   * In that case, the caller (OCRPipeline) is responsible for termination.
    */
   async terminate(): Promise<void> {
-    if (this.worker) {
+    if (!this.workerIsShared && this.worker) {
       await this.worker.terminate();
       this.worker = null;
     }
