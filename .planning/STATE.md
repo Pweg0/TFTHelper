@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Restructuring
-stopped_at: Awaiting human verification - 03-04 Task 3 checkpoint
-last_updated: "2026-03-13T01:56:21.515Z"
+stopped_at: Completed 03-04-PLAN.md
+last_updated: "2026-03-13T02:01:44.061Z"
 last_activity: 2026-03-12 — Discovered Live Client API does not provide TFT board state; pivoted to OCR
 progress:
   total_phases: 5
@@ -53,6 +53,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 03-ocr-pipeline P01 | 298 | 2 tasks | 9 files |
 | Phase 03-ocr-pipeline P02 | 257 | 2 tasks | 6 files |
 | Phase 03 P03 | 323 | 2 tasks | 6 files |
+| Phase 03-ocr-pipeline P04 | 20 | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,9 @@ Progress: [██░░░░░░░░] 20%
 - [Phase 03-ocr-pipeline]: parseOverlayState accepts optional OCRResult second parameter with ?? defaults — all overlay tests remain green
 - [Phase 03-ocr-pipeline]: Item icons in overlay resolved via get-item-icons IPC returning file:// URLs — keeps OverlayState lean
 - [Phase 03-ocr-pipeline]: SHOP_SLOT_CENTERS re-declared as renderer constant in ShopHighlight to avoid importing main-process code into renderer bundle
+- [Phase 03-ocr-pipeline]: Item icons in overlay resolved via get-item-icons IPC returning file:// URLs — keeps OverlayState lean
+- [Phase 03-ocr-pipeline]: SHOP_SLOT_CENTERS re-declared as renderer constant in ShopHighlight to avoid importing main-process code into renderer bundle
+- [Phase 03-ocr-pipeline]: BoardStatePoller uses optional setOCRPipeline() setter for backward-compatible OCR injection
 
 ### Pending Todos
 
@@ -92,6 +96,6 @@ Progress: [██░░░░░░░░] 20%
 
 ## Session Continuity
 
-Last session: 2026-03-13T01:56:12.057Z
-Stopped at: Awaiting human verification - 03-04 Task 3 checkpoint
+Last session: 2026-03-13T02:01:44.056Z
+Stopped at: Completed 03-04-PLAN.md
 Resume file: None

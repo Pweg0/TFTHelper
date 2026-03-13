@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Data Pipeline** - Static game data and meta builds cached locally before any UI exists (completed 2026-03-12)
 - [ ] **Phase 2: Overlay Window** - Transparent overlay attached to TFT window with basic local player data (gold, level)
-- [ ] **Phase 3: OCR Pipeline** - Screen capture and text/icon recognition to read board state, shop, and items from TFT
+- [x] **Phase 3: OCR Pipeline** - Screen capture and text/icon recognition to read board state, shop, and items from TFT (completed 2026-03-13)
 - [ ] **Phase 4: Scouting & Display** - All player boards visible in overlay using OCR data from scouting screen
 - [ ] **Phase 5: Recommendation Engine** - Comp and item recommendations driven by OCR board state, augments and meta winrates
 
@@ -64,7 +64,7 @@ Plans:
   3. OCR reads the shop (5 champion slots with names and costs)
   4. OCR reads item components and completed items on board champions
   5. Champions in the shop that the player already owns are highlighted in the overlay
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 03-01-PLAN.md — OCR types, coordinates, screen capturer, and region cropper foundation
@@ -104,6 +104,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Data Pipeline | 4/4 | Complete | 2026-03-12 |
 | 2. Overlay Window | 2/4 | In Progress (cleanup needed) | |
-| 3. OCR Pipeline | 3/4 | In Progress|  |
+| 3. OCR Pipeline | 4/4 | Complete   | 2026-03-13 |
 | 4. Scouting & Display | 0/TBD | Not started | - |
 | 5. Recommendation Engine | 0/TBD | Not started | - |
