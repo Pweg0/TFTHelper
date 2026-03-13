@@ -64,7 +64,7 @@ Plans:
   3. OCR reads the shop (5 champion slots with names and costs)
   4. OCR reads item components and completed items on board champions
   5. Champions in the shop that the player already owns are highlighted in the overlay
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 Plans:
 - [ ] 03-01-PLAN.md — OCR types, coordinates, screen capturer, and region cropper foundation
@@ -104,6 +104,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Data Pipeline | 4/4 | Complete | 2026-03-12 |
 | 2. Overlay Window | 2/4 | In Progress (cleanup needed) | |
-| 3. OCR Pipeline | 0/4 | Planned | - |
+| 3. OCR Pipeline | 1/4 | In Progress|  |
 | 4. Scouting & Display | 0/TBD | Not started | - |
 | 5. Recommendation Engine | 0/TBD | Not started | - |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Restructuring
-stopped_at: Phase 3 context gathered
-last_updated: "2026-03-13T00:59:23.033Z"
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-03-13T01:34:19.593Z"
 last_activity: 2026-03-12 — Discovered Live Client API does not provide TFT board state; pivoted to OCR
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 8
-  completed_plans: 7
+  total_plans: 12
+  completed_plans: 8
   percent: 20
 ---
 
@@ -50,6 +50,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 02-overlay-window P01 | 3 | 1 tasks | 4 files |
 | Phase 02-overlay-window P02 | 3 | 2 tasks | 10 files |
 | Phase 02-overlay-window P03 | 3 | 2 tasks | 6 files |
+| Phase 03-ocr-pipeline P01 | 298 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -66,6 +67,8 @@ Progress: [██░░░░░░░░] 20%
 - [Phase 01-data-pipeline]: All decisions preserved (see git history)
 - [Phase 02-overlay-window]: electron-overlay-window works after native build fix (VS Build Tools C++ workload + externalizeDepsPlugin fix)
 - [Phase 02-overlay-window]: BoardStateParser and TFT types are WRONG — built on incorrect API assumptions, need rewrite for OCR data
+- [Phase 03-ocr-pipeline]: Jimp v1.x named export { Jimp } required (not default import)
+- [Phase 03-ocr-pipeline]: Use vi.hoisted() for Vitest mocks referencing top-level variables in vi.mock factory
 
 ### Pending Todos
 
@@ -80,6 +83,6 @@ Progress: [██░░░░░░░░] 20%
 
 ## Session Continuity
 
-Last session: 2026-03-13T00:59:23.022Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-ocr-pipeline/03-CONTEXT.md
+Last session: 2026-03-13T01:34:19.581Z
+Stopped at: Completed 03-01-PLAN.md
+Resume file: None

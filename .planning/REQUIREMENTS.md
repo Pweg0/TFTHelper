@@ -12,8 +12,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **DATA-01**: App conecta com Riot Live Client API para detectar partida ativa de TFT
 - [x] **DATA-02**: App baixa e cacheia dados estáticos de campeões, traits, itens e augments via CommunityDragon
 - [x] **DATA-03**: App coleta e cacheia meta builds (comps, winrates) de sites como MetaTFT/Mobalytics ao iniciar
-- [ ] **DATA-04**: App lê board state do jogador local via OCR (composição, itens, nível de estrela)
-- [ ] **DATA-05**: App lê a shop do jogador via OCR (5 campeões disponíveis)
+- [x] **DATA-04**: App lê board state do jogador local via OCR (composição, itens, nível de estrela)
+- [x] **DATA-05**: App lê a shop do jogador via OCR (5 campeões disponíveis)
 - [ ] **DATA-06**: App lê board state dos oponentes via OCR na tela de scouting (Tab)
 - [ ] **DATA-07**: App lê gold, level e HP do jogador local (Live Client API + OCR)
 
@@ -84,8 +84,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-01 | Phase 1 | Complete |
 | DATA-02 | Phase 1 | Complete |
 | DATA-03 | Phase 1 | Complete |
-| DATA-04 | Phase 3 | Pending |
-| DATA-05 | Phase 3 | Pending |
+| DATA-04 | Phase 3 | Complete |
+| DATA-05 | Phase 3 | Complete |
 | DATA-06 | Phase 4 | Pending |
 | DATA-07 | Phase 2 | Pending |
 | OVER-01 | Phase 2 | Complete |
