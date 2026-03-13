@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// Mock fetchGameData and parseBoardState before imports
-const { mockFetchGameData, mockParseBoardState } = vi.hoisted(() => ({
+const { mockFetchGameData, mockParseOverlayState } = vi.hoisted(() => ({
   mockFetchGameData: vi.fn(),
-  mockParseBoardState: vi.fn(),
+  mockParseOverlayState: vi.fn(),
 }));
 
 vi.mock('../game/LiveClientAPI', () => ({
@@ -11,10 +10,9 @@ vi.mock('../game/LiveClientAPI', () => ({
 }));
 
 vi.mock('./BoardStateParser', () => ({
-  parseBoardState: mockParseBoardState,
+  parseOverlayState: mockParseOverlayState,
 }));
 
-// Mock electron BrowserWindow
 vi.mock('electron', () => ({
   BrowserWindow: vi.fn(),
 }));
@@ -34,7 +32,7 @@ describe('BoardStatePoller', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     mockFetchGameData.mockReset();
-    mockParseBoardState.mockReset();
+    mockParseOverlayState.mockReset();
   });
 
   afterEach(() => {
@@ -43,26 +41,25 @@ describe('BoardStatePoller', () => {
 
   it('start() creates a 1s interval that triggers fetch, parse, and IPC send', async () => {
     const win = makeMockWin();
-    const fakePlayers = [{ summonerName: 'Alice', hp: 80 }];
+    const fakeState = { gold: 42, level: 5, gameTime: 60, playerNames: ['Alice'], localPlayerName: 'Alice' };
 
-    mockFetchGameData.mockResolvedValue({ gameData: { gameMode: 'TFT', gameTime: 10 } });
-    mockParseBoardState.mockReturnValue(fakePlayers);
+    mockFetchGameData.mockResolvedValue({ gameData: { gameMode: 'TFT', gameTime: 60 } });
+    mockParseOverlayState.mockReturnValue(fakeState);
 
     const poller = new BoardStatePoller();
     poller.start(win as never);
 
-    // Advance 1000ms to trigger the interval
     await vi.advanceTimersByTimeAsync(1000);
 
     expect(mockFetchGameData).toHaveBeenCalledTimes(1);
-    expect(mockParseBoardState).toHaveBeenCalledTimes(1);
-    expect(win.webContents.send).toHaveBeenCalledWith('board-state-update', fakePlayers);
+    expect(mockParseOverlayState).toHaveBeenCalledTimes(1);
+    expect(win.webContents.send).toHaveBeenCalledWith('overlay-state-update', fakeState);
   });
 
   it('stop() clears the interval so no further sends occur', async () => {
     const win = makeMockWin();
     mockFetchGameData.mockResolvedValue({ gameData: { gameMode: 'TFT', gameTime: 10 } });
-    mockParseBoardState.mockReturnValue([]);
+    mockParseOverlayState.mockReturnValue({});
 
     const poller = new BoardStatePoller();
     poller.start(win as never);
@@ -73,7 +70,6 @@ describe('BoardStatePoller', () => {
     poller.stop();
 
     await vi.advanceTimersByTimeAsync(2000);
-    // Should still be only 1 call after stop
     expect(win.webContents.send).toHaveBeenCalledTimes(1);
   });
 
@@ -86,14 +82,13 @@ describe('BoardStatePoller', () => {
 
     await vi.advanceTimersByTimeAsync(1000);
 
-    expect(mockParseBoardState).not.toHaveBeenCalled();
+    expect(mockParseOverlayState).not.toHaveBeenCalled();
     expect(win.webContents.send).not.toHaveBeenCalled();
   });
 
   it('does not call send when overlayWin.isDestroyed() returns true', async () => {
-    const win = makeMockWin(true); // destroyed = true
+    const win = makeMockWin(true);
     mockFetchGameData.mockResolvedValue({ gameData: { gameMode: 'TFT', gameTime: 10 } });
-    mockParseBoardState.mockReturnValue([]);
 
     const poller = new BoardStatePoller();
     poller.start(win as never);
@@ -103,19 +98,18 @@ describe('BoardStatePoller', () => {
     expect(win.webContents.send).not.toHaveBeenCalled();
   });
 
-  it('multiple start() calls only maintain one active interval (no duplicate timers)', async () => {
+  it('multiple start() calls only maintain one active interval', async () => {
     const win = makeMockWin();
     mockFetchGameData.mockResolvedValue({ gameData: { gameMode: 'TFT', gameTime: 10 } });
-    mockParseBoardState.mockReturnValue([]);
+    mockParseOverlayState.mockReturnValue({});
 
     const poller = new BoardStatePoller();
     poller.start(win as never);
-    poller.start(win as never); // second start should clear first
-    poller.start(win as never); // third start — only this one active
+    poller.start(win as never);
+    poller.start(win as never);
 
     await vi.advanceTimersByTimeAsync(1000);
 
-    // Only one interval firing — exactly 1 fetch call
     expect(mockFetchGameData).toHaveBeenCalledTimes(1);
     expect(win.webContents.send).toHaveBeenCalledTimes(1);
   });

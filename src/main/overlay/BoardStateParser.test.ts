@@ -1,26 +1,20 @@
 import { describe, it, expect } from 'vitest';
-import { parseBoardState, LiveClientResponseSchema } from './BoardStateParser';
+import { parseOverlayState, LiveClientResponseSchema } from './BoardStateParser';
 import type { LiveClientResponse } from '../game/types';
 
-// Helper to build a minimal TFTPlayer-shaped object for tests
 function makePlayer(
   summonerName: string,
-  currentHealth: number,
-  maxHealth: number,
   isDead = false,
-  level = 1,
-  items: { displayName: string; itemID: number }[] = [],
+  riotIdGameName?: string,
 ): Record<string, unknown> {
   return {
     summonerName,
-    championName: 'TFT_TestUnit',
-    level,
+    riotIdGameName: riotIdGameName ?? summonerName,
+    level: 3,
     isDead,
-    items,
-    championStats: {
-      currentHealth,
-      maxHealth,
-    },
+    isBot: false,
+    team: 'ORDER',
+    items: [],
   };
 }
 
@@ -28,160 +22,90 @@ function makeResponse(
   players: Record<string, unknown>[],
   activeSummonerName = '',
   currentGold = 0,
+  level = 1,
+  gameTime = 120,
 ): LiveClientResponse {
   return {
-    gameData: { gameMode: 'TFT', gameTime: 120 },
+    gameData: { gameMode: 'TFT', gameTime },
     allPlayers: players as never,
     activePlayer: {
       summonerName: activeSummonerName,
       currentGold,
+      level,
     },
   };
 }
 
-describe('parseBoardState', () => {
-  it('returns DisplayPlayer[] sorted by HP descending for 8 players', () => {
-    const players = [
-      makePlayer('Alice', 60, 100),
-      makePlayer('Bob', 90, 100),
-      makePlayer('Carol', 30, 100),
-      makePlayer('Dave', 75, 100),
-      makePlayer('Eve', 50, 100),
-      makePlayer('Frank', 85, 100),
-      makePlayer('Grace', 20, 100),
-      makePlayer('Hank', 45, 100),
-    ];
+describe('parseOverlayState', () => {
+  it('extracts gold, level, and gameTime from activePlayer and gameData', () => {
+    const result = parseOverlayState(
+      makeResponse([makePlayer('Alice')], 'Alice', 42, 5, 180),
+    );
 
-    const result = parseBoardState(makeResponse(players));
-
-    expect(result.map((p) => p.summonerName)).toEqual([
-      'Bob',
-      'Frank',
-      'Dave',
-      'Alice',
-      'Eve',
-      'Hank',
-      'Carol',
-      'Grace',
-    ]);
-    // All HPs in descending order
-    for (let i = 1; i < result.length; i++) {
-      expect(result[i - 1].hp).toBeGreaterThanOrEqual(result[i].hp);
-    }
+    expect(result.gold).toBe(42);
+    expect(result.level).toBe(5);
+    expect(result.gameTime).toBe(180);
+    expect(result.localPlayerName).toBe('Alice');
   });
 
-  it('filters out eliminated players (isDead === true)', () => {
+  it('lists alive player names and excludes dead players', () => {
     const players = [
-      makePlayer('Alive', 80, 100, false),
-      makePlayer('Dead', 40, 100, true),
+      makePlayer('Alice', false),
+      makePlayer('Bob', true),
+      makePlayer('Carol', false),
     ];
 
-    const result = parseBoardState(makeResponse(players));
+    const result = parseOverlayState(makeResponse(players, 'Alice', 10));
 
-    expect(result).toHaveLength(1);
-    expect(result[0].summonerName).toBe('Alive');
+    expect(result.playerNames).toEqual(['Alice', 'Carol']);
   });
 
-  it('filters out players with currentHealth <= 0', () => {
+  it('uses riotIdGameName when available', () => {
     const players = [
-      makePlayer('Alive', 50, 100, false),
-      makePlayer('ZeroHP', 0, 100, false),
-      makePlayer('NegativeHP', -5, 100, false),
+      makePlayer('summoner1', false, 'RiotName1'),
+      makePlayer('summoner2', false, 'RiotName2'),
     ];
 
-    const result = parseBoardState(makeResponse(players));
-
-    expect(result).toHaveLength(1);
-    expect(result[0].summonerName).toBe('Alive');
+    const result = parseOverlayState(makeResponse(players));
+    expect(result.playerNames).toEqual(['RiotName1', 'RiotName2']);
   });
 
-  it('filters out players with missing championStats (treated as eliminated)', () => {
-    const playerWithStats = makePlayer('WithStats', 70, 100);
-    const playerWithoutStats = {
-      summonerName: 'NoStats',
-      championName: 'TFT_Unit',
-      level: 1,
-      isDead: false,
-      items: [],
-      // No championStats field
+  it('falls back to summonerName when riotIdGameName is missing', () => {
+    const players = [
+      { summonerName: 'FallbackName', isDead: false, level: 1, isBot: false, team: 'ORDER', items: [] },
+    ];
+
+    const result = parseOverlayState(makeResponse(players as never));
+    expect(result.playerNames).toEqual(['FallbackName']);
+  });
+
+  it('defaults gold to 0 and level to 1 when activePlayer has no data', () => {
+    const response: LiveClientResponse = {
+      gameData: { gameMode: 'TFT', gameTime: 0 },
+      allPlayers: [],
+      activePlayer: {},
     };
 
-    const result = parseBoardState(makeResponse([playerWithStats, playerWithoutStats as never]));
-
-    expect(result).toHaveLength(1);
-    expect(result[0].summonerName).toBe('WithStats');
+    const result = parseOverlayState(response);
+    expect(result.gold).toBe(0);
+    expect(result.level).toBe(1);
+    expect(result.localPlayerName).toBe('');
   });
 
-  it('returns empty array when allPlayers is empty', () => {
-    const result = parseBoardState(makeResponse([]));
-    expect(result).toEqual([]);
+  it('returns empty playerNames when allPlayers is empty', () => {
+    const result = parseOverlayState(makeResponse([]));
+    expect(result.playerNames).toEqual([]);
   });
 
-  it('returns empty array when all players are eliminated', () => {
-    const players = [
-      makePlayer('Dead1', 0, 100, false),
-      makePlayer('Dead2', 30, 100, true),
-      makePlayer('Dead3', -1, 100, false),
-    ];
+  it('uses riotId as fallback for localPlayerName when summonerName is missing', () => {
+    const response: LiveClientResponse = {
+      gameData: { gameMode: 'TFT', gameTime: 60 },
+      allPlayers: [],
+      activePlayer: { riotId: 'Player#BR1' },
+    };
 
-    const result = parseBoardState(makeResponse(players));
-    expect(result).toEqual([]);
-  });
-
-  it('marks local player with isLocalPlayer=true and includes gold', () => {
-    const players = [
-      makePlayer('LocalPlayer', 80, 100),
-      makePlayer('OtherPlayer', 60, 100),
-    ];
-
-    const result = parseBoardState(makeResponse(players, 'LocalPlayer', 42));
-
-    const local = result.find((p) => p.summonerName === 'LocalPlayer');
-    const other = result.find((p) => p.summonerName === 'OtherPlayer');
-
-    expect(local).toBeDefined();
-    expect(local!.isLocalPlayer).toBe(true);
-    expect(local!.gold).toBe(42);
-
-    expect(other).toBeDefined();
-    expect(other!.isLocalPlayer).toBe(false);
-    expect(other!.gold).toBeUndefined();
-  });
-
-  it('returns correct DisplayPlayer shape', () => {
-    const items = [
-      { displayName: 'Warmogs Armor', itemID: 57 },
-      { displayName: 'Rabadon Deathcap', itemID: 35 },
-    ];
-    const players = [makePlayer('Tester', 75, 150, false, 3, items)];
-
-    const result = parseBoardState(makeResponse(players));
-
-    expect(result).toHaveLength(1);
-    expect(result[0]).toMatchObject({
-      summonerName: 'Tester',
-      hp: 75,
-      maxHp: 150,
-      level: 3,
-      champions: ['TFT_TestUnit'],
-      items: [
-        { displayName: 'Warmogs Armor', itemID: 57 },
-        { displayName: 'Rabadon Deathcap', itemID: 35 },
-      ],
-      isLocalPlayer: false,
-    });
-  });
-
-  it('preserves duplicate summonerNames without deduplication', () => {
-    const players = [
-      makePlayer('SameName', 80, 100),
-      makePlayer('SameName', 60, 100),
-    ];
-
-    const result = parseBoardState(makeResponse(players));
-
-    expect(result).toHaveLength(2);
-    expect(result.every((p) => p.summonerName === 'SameName')).toBe(true);
+    const result = parseOverlayState(response);
+    expect(result.localPlayerName).toBe('Player#BR1');
   });
 });
 
@@ -192,11 +116,12 @@ describe('LiveClientResponseSchema', () => {
       allPlayers: [
         {
           summonerName: 'Player1',
-          championName: 'TFT_Unit',
+          riotIdGameName: 'Player1',
           level: 2,
           isDead: false,
+          isBot: false,
+          team: 'ORDER',
           items: [],
-          championStats: { currentHealth: 50, maxHealth: 100, armor: 30 },
           unknownTftField: 'some_value',
         },
       ],
@@ -216,7 +141,6 @@ describe('LiveClientResponseSchema', () => {
       allPlayers: [
         {
           summonerName: 'Player1',
-          // Missing: championName, level, isDead, items, championStats
         },
       ],
       activePlayer: {},
@@ -225,13 +149,12 @@ describe('LiveClientResponseSchema', () => {
     const result = LiveClientResponseSchema.parse(raw);
     const player = result.allPlayers[0];
 
-    expect(player.championName).toBe('');
     expect(player.level).toBe(1);
     expect(player.isDead).toBe(false);
     expect(player.items).toEqual([]);
   });
 
-  it('returns empty array for missing allPlayers', () => {
+  it('returns empty array for empty allPlayers', () => {
     const raw = {
       gameData: { gameMode: 'TFT', gameTime: 0 },
       allPlayers: [],

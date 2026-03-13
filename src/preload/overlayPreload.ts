@@ -1,8 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('overlayApi', {
-  onBoardStateUpdate: (callback: (boardState: unknown) => void) =>
-    ipcRenderer.on('board-state-update', (_event, boardState) => callback(boardState)),
+  onOverlayStateUpdate: (callback: (state: unknown) => void) =>
+    ipcRenderer.on('overlay-state-update', (_event, state) => callback(state)),
   toggleClickThrough: (ignore: boolean) =>
     ipcRenderer.send('set-ignore-mouse-events', ignore),
 });

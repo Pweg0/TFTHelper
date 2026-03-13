@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-overlay-window 02-03-PLAN.md
-last_updated: "2026-03-12T23:51:14.030Z"
-last_activity: 2026-03-12 — Roadmap created, phases derived from 14 requirements
+stopped_at: Phase 2 cleanup — restructuring for OCR-based approach
+last_updated: "2026-03-12"
+last_activity: 2026-03-12 — Discovered Live Client API limitations, pivoted to OCR + Live Client API
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 1
   total_plans: 8
-  completed_plans: 7
-  percent: 25
+  completed_plans: 4
+  percent: 20
 ---
 
 # Project State
@@ -21,82 +21,65 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Recommend the best possible comp for the current match, considering what other players are doing, available augments and the local player's items
-**Current focus:** Phase 1 — Data Pipeline
+**Current focus:** Phase 2 — Overlay Window (cleanup after API pivot)
 
 ## Current Position
 
-Phase: 1 of 4 (Data Pipeline)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-12 — Roadmap created, phases derived from 14 requirements
+Phase: 2 of 5 (Overlay Window)
+Plan: Cleanup in progress — removing wrong API-based code
+Status: Restructuring
+Last activity: 2026-03-12 — Discovered Live Client API does not provide TFT board state; pivoted to OCR
 
-Progress: [███░░░░░░░] 25%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 7 (4 Phase 1 + 3 Phase 2, though Phase 2 plans need rewrite)
+- Average duration: ~7 min/plan
+- Total execution time: ~1 hour
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
-
-**Recent Trend:**
-- Last 5 plans: -
-- Trend: -
-
-*Updated after each plan completion*
 | Phase 01-data-pipeline P01 | 15 | 2 tasks | 16 files |
-| Phase 01-data-pipeline P03 | 3 | 2 tasks | 6 files |
 | Phase 01-data-pipeline P02 | 15 | 6 tasks | 6 files |
+| Phase 01-data-pipeline P03 | 3 | 2 tasks | 6 files |
 | Phase 01-data-pipeline P04 | 8 | 2 tasks | 7 files |
 | Phase 02-overlay-window P01 | 3 | 1 tasks | 4 files |
 | Phase 02-overlay-window P02 | 3 | 2 tasks | 10 files |
-| Phase 02-overlay-window PP03 | 3 | 2 tasks | 6 files |
+| Phase 02-overlay-window P03 | 3 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
 ### Decisions
 
-- Stack: Electron 34 + React 19 + TypeScript + electron-overlay-window (research confirmed, no Overwolf dependency)
+- Stack: Electron 34 + React 19 + TypeScript + electron-overlay-window
 - Meta data: Scraper at startup caching locally — no public API exists
-- Policy: User chose personal-use tool; scouting requirements kept in scope intentionally
-- Data source: Riot Live Client API (localhost:2999, no rate limits) for in-game data; CommunityDragon CDN for static data
-- [Phase 01-data-pipeline]: Scaffold created manually (create-electron-vite CLI is interactive-only, not automatable in non-TTY)
-- [Phase 01-data-pipeline]: MetaCompSchema includes optional itemPriorities and positioning for full data extraction from scraper
-- [Phase 01-data-pipeline]: DataCache readJsonFile returns null on ENOENT for safe cache-miss checks
-- [Phase 01-data-pipeline]: tactics.tools __NEXT_DATA__ path is pageProps.compositions — debug logging of pageProps keys on every scrape enables detection if path changes
-- [Phase 01-data-pipeline]: GameWatcher treats non-TFT game modes as no-game — onGameStart only fires when gameMode === TFT
-- [Phase 01-data-pipeline]: refreshMetaIfStale accepts a Store interface (get/set) rather than concrete electron-store for testability
-- [Phase 01-data-pipeline]: CDragon setData: current set selected by highest numeric set.number; items/augments at top-level JSON, not per-set
-- [Phase 01-data-pipeline]: CDragon CDN icon URL: lowercase full ASSETS/ path + replace .tex with .png under rcp-be-lol-game-data/global/default
-- [Phase 01-data-pipeline]: Startup triggered on did-finish-load (not app.whenReady) so renderer is listening before first IPC message arrives
-- [Phase 01-data-pipeline]: Store initialized in index.ts and shared with registerIpcHandlers — single source of truth for app config
-- [Phase 01-data-pipeline]: Icon download and meta scrape are non-fatal — app proceeds to waiting screen even if either fails
-- [Phase 02-overlay-window]: BoardStateParser: champion list uses single-element array per allPlayers entry; missing championStats treated as eliminated (hp=0)
-- [Phase 02-overlay-window]: IPC handler set-ignore-mouse-events registered inside createOverlayWindow for test isolation with vi.clearAllMocks
-- [Phase 02-overlay-window]: overlayApi separate contextBridge world key from main api to prevent IPC channel collision
-- [Phase 02-overlay-window]: electron-overlay-window in externalizeDepsPlugin exclude — native addon must not be bundled by Vite
-- [Phase 02-overlay-window]: BoardStatePoller.start() clears existing interval first — prevents duplicate timer stacking on repeated calls
-- [Phase 02-overlay-window]: overlayWin created once before watcher.start() so overlay is ready before any game event fires; poller.start() called inside onGameStart
-- [Phase 02-overlay-window]: DisplayPlayer interface defined inline in overlay renderer — avoids cross-process type imports from main process
+- Data source pivot: Riot Live Client API does NOT provide TFT board state (compositions, HP, items). Only provides player names, gold, level for local player.
+- New data strategy: OCR (screen capture + recognition) for TFT-specific data + Live Client API for game detection and basic info
+- OCR reference: TFT-OCR-BOT (github.com/jfd02/TFT-OCR-BOT) — Tesseract-based screen reading
+- Distribution: Single .exe for friends, obfuscated, no external deps (v2)
+- Vanguard: Memory reading is blocked by kernel-level anti-cheat. No workaround exists.
+- Overwolf rejected: Requires ads + Overwolf distribution, conflicts with private .exe plan
+- [Phase 01-data-pipeline]: All decisions preserved (see git history)
+- [Phase 02-overlay-window]: electron-overlay-window works after native build fix (VS Build Tools C++ workload + externalizeDepsPlugin fix)
+- [Phase 02-overlay-window]: BoardStateParser and TFT types are WRONG — built on incorrect API assumptions, need rewrite for OCR data
 
 ### Pending Todos
 
-None yet.
+- Clean up Phase 2 code: remove wrong BoardStateParser, fix types for actual API data
+- Re-plan Phase 2 overlay UI for available data (gold, level, meta comps)
 
 ### Blockers/Concerns
 
-- Phase 2: electron-overlay-window behavior in TFT fullscreen vs windowed mode needs hands-on testing
-- Phase 2: Exact TFT-specific fields from Live Client Data API unknown until tested in a real match
-- Phase 3: MetaTFT/tactics.tools scraper complexity depends on whether HTML is server-rendered or client-rendered
+- OCR accuracy for TFT champion recognition needs research (icon matching vs text OCR)
+- TFT UI changes between patches may break coordinate-based OCR
+- Performance: OCR scan cycle time vs overlay update frequency tradeoff
 
 ## Session Continuity
 
-Last session: 2026-03-12T23:51:14.023Z
-Stopped at: Completed 02-overlay-window 02-03-PLAN.md
+Last session: 2026-03-12
+Stopped at: Phase 2 cleanup — restructuring for OCR-based approach
 Resume file: None

@@ -1,24 +1,16 @@
 import { BrowserWindow } from 'electron';
 import { fetchGameData } from '../game/LiveClientAPI';
-import { parseBoardState } from './BoardStateParser';
+import { parseOverlayState } from './BoardStateParser';
 
 /**
  * BoardStatePoller polls the Riot Live Client Data API every 1 second,
- * parses the board state, and pushes it to the overlay window via IPC.
- *
- * - start(overlayWin) begins polling. Multiple calls clear the previous interval first.
- * - stop() clears the interval.
- * - Skips IPC send if overlayWin is destroyed or fetchGameData returns null.
+ * parses the available data (gold, level, game time, player names),
+ * and pushes it to the overlay window via IPC.
  */
 export class BoardStatePoller {
   private intervalId: ReturnType<typeof setInterval> | null = null;
 
-  /**
-   * Starts the 1s polling loop. Clears any existing interval first to prevent
-   * duplicate timers on repeated start() calls.
-   */
   start(overlayWin: BrowserWindow): void {
-    // Clear previous interval if any
     if (this.intervalId !== null) {
       clearInterval(this.intervalId);
       this.intervalId = null;
@@ -29,9 +21,6 @@ export class BoardStatePoller {
     }, 1000);
   }
 
-  /**
-   * Stops the polling loop.
-   */
   stop(): void {
     if (this.intervalId !== null) {
       clearInterval(this.intervalId);
@@ -41,18 +30,14 @@ export class BoardStatePoller {
 
   private async tick(overlayWin: BrowserWindow): Promise<void> {
     const data = await fetchGameData();
-
-    // Skip if no game running
     if (data === null) {
+      console.debug('[BoardStatePoller] No game data (API returned null)');
       return;
     }
+    if (overlayWin.isDestroyed()) return;
 
-    // Skip if the overlay window was closed
-    if (overlayWin.isDestroyed()) {
-      return;
-    }
-
-    const players = parseBoardState(data);
-    overlayWin.webContents.send('board-state-update', players);
+    const state = parseOverlayState(data);
+    console.log('[BoardStatePoller] Sending:', JSON.stringify(state).slice(0, 200));
+    overlayWin.webContents.send('overlay-state-update', state);
   }
 }

@@ -1,75 +1,4 @@
 /**
- * TFTItem represents an item equipped on a TFT champion unit.
- * Field names are provisional — validate against live game Swagger
- * (available at https://127.0.0.1:2999/swagger/v3/openapi.json during a match).
- */
-export interface TFTItem {
-  displayName: string;
-  itemID: number;
-  rawDescriptionKey?: string;
-  rawDisplayNameKey?: string;
-  [key: string]: unknown;
-}
-
-/**
- * TFTPlayer represents a single entry in the allPlayers array from the
- * Riot Live Client Data API during a TFT match.
- *
- * NOTE: In TFT, allPlayers may represent individual champion units rather
- * than human players. The exact field schema is provisional (LOW confidence
- * from research). Use .passthrough() and .optional() everywhere.
- * The real schema will be validated with a live game in Plan 04.
- */
-export interface TFTPlayer {
-  summonerName: string;
-  championName: string;     // TFT unit name e.g. "TFT_Tristana" (may vary)
-  level: number;            // champion star level (1/2/3)
-  isDead: boolean;
-  items: TFTItem[];
-  championStats?: {
-    currentHealth: number;
-    maxHealth: number;
-    [key: string]: unknown;
-  };
-  scores?: {
-    kills: number;          // in TFT: placement round wins?
-    [key: string]: unknown;
-  };
-  [key: string]: unknown;   // passthrough for unknown TFT fields
-}
-
-/**
- * ActivePlayer represents the local player's data from the activePlayer
- * endpoint. Includes gold and level which are not available for opponents.
- */
-export interface ActivePlayer {
-  summonerName?: string;
-  currentGold?: number;
-  level?: number;
-  championStats?: {
-    currentHealth: number;
-    maxHealth: number;
-    [key: string]: unknown;
-  };
-  [key: string]: unknown;
-}
-
-/**
- * LiveClientResponse represents a response from the Riot Live Client Data API
- * (localhost:2999). Expanded in Phase 2 to include TFT-specific types.
- * The exact shape will be refined after in-game testing in Plan 04.
- */
-export interface LiveClientResponse {
-  gameData: {
-    gameMode: string;
-    gameTime: number;
-    [key: string]: unknown;
-  };
-  allPlayers: TFTPlayer[];
-  activePlayer: ActivePlayer;
-}
-
-/**
  * GameState tracks whether a TFT match is currently active.
  */
 export interface GameState {
@@ -79,28 +8,55 @@ export interface GameState {
 }
 
 /**
- * DisplayChampion holds the data needed to render a champion icon in the overlay.
+ * Actual Riot Live Client API response shape for TFT matches.
+ * Validated against live game data captured from localhost:2999/liveclientdata/allgamedata.
+ *
+ * NOTE: The Live Client API does NOT provide TFT board state (compositions, items, HP).
+ * Board state will come from OCR in Phase 3.
  */
-export interface DisplayChampion {
-  name: string;
-  starLevel: number;
+export interface LiveClientResponse {
+  gameData: {
+    gameMode: string;
+    gameTime: number;
+    mapName?: string;
+    [key: string]: unknown;
+  };
+  activePlayer: {
+    summonerName?: string;
+    riotId?: string;
+    currentGold?: number;
+    level?: number;
+    [key: string]: unknown;
+  };
+  allPlayers: LiveClientPlayer[];
+  [key: string]: unknown;
 }
 
 /**
- * DisplayPlayer is the view model consumed by the overlay renderer.
- * Produced by parseBoardState() from raw LiveClientResponse data.
+ * A single player entry in allPlayers from the Live Client API.
+ * In TFT, each entry is a human player (not a champion unit).
+ * Fields like items[] are always empty in TFT.
  */
-export interface DisplayPlayer {
+export interface LiveClientPlayer {
   summonerName: string;
-  hp: number;
-  maxHp: number;
+  riotIdGameName?: string;
+  riotIdTagLine?: string;
   level: number;
-  /** Champion names for icon display (from championName field per player entry) */
-  champions: string[];
-  /** Items on this player's champions */
-  items: TFTItem[];
-  /** Whether this is the local (active) player */
-  isLocalPlayer: boolean;
-  /** Current gold — only populated for the local player */
-  gold?: number;
+  isDead: boolean;
+  isBot: boolean;
+  team: string;
+  items: unknown[];
+  [key: string]: unknown;
+}
+
+/**
+ * OverlayState is the view model pushed from main to the overlay renderer.
+ * Contains only data actually available from the Live Client API.
+ */
+export interface OverlayState {
+  gold: number;
+  level: number;
+  gameTime: number;
+  playerNames: string[];
+  localPlayerName: string;
 }

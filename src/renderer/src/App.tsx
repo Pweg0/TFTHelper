@@ -107,10 +107,10 @@ export default function App(): JSX.Element {
     );
   }
 
-  // in-game placeholder — replaced in Phase 2
+  // in-game — overlay is a separate window, main window shows minimal status
   return (
     <div style={inGameStyles.container}>
-      <p style={inGameStyles.message}>Game detected! Overlay coming in Phase 2.</p>
+      <p style={inGameStyles.message}>Partida em andamento</p>
     </div>
   );
 }
