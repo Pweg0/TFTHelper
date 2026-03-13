@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Restructuring
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-03-13T01:49:22.478Z"
+stopped_at: Awaiting human verification - 03-04 Task 3 checkpoint
+last_updated: "2026-03-13T01:56:21.515Z"
 last_activity: 2026-03-12 — Discovered Live Client API does not provide TFT board state; pivoted to OCR
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 12
-  completed_plans: 10
+  completed_plans: 11
   percent: 20
 ---
 
@@ -76,6 +76,8 @@ Progress: [██░░░░░░░░] 20%
 - [Phase 03-ocr-pipeline]: Shared Tesseract.js worker injection via constructor for ShopOCR and BoardOCR to avoid multiple WASM instances
 - [Phase 03-ocr-pipeline]: BoardStatePoller uses optional setOCRPipeline() setter for backward-compatible OCR injection
 - [Phase 03-ocr-pipeline]: parseOverlayState accepts optional OCRResult second parameter with ?? defaults — all overlay tests remain green
+- [Phase 03-ocr-pipeline]: Item icons in overlay resolved via get-item-icons IPC returning file:// URLs — keeps OverlayState lean
+- [Phase 03-ocr-pipeline]: SHOP_SLOT_CENTERS re-declared as renderer constant in ShopHighlight to avoid importing main-process code into renderer bundle
 
 ### Pending Todos
 
@@ -90,6 +92,6 @@ Progress: [██░░░░░░░░] 20%
 
 ## Session Continuity
 
-Last session: 2026-03-13T01:49:22.468Z
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-03-13T01:56:12.057Z
+Stopped at: Awaiting human verification - 03-04 Task 3 checkpoint
 Resume file: None
