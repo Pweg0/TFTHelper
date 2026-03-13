@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Restructuring
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-03-13T01:34:19.593Z"
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-03-13T01:41:12.160Z"
 last_activity: 2026-03-12 — Discovered Live Client API does not provide TFT board state; pivoted to OCR
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 12
-  completed_plans: 8
+  completed_plans: 9
   percent: 20
 ---
 
@@ -51,6 +51,7 @@ Progress: [██░░░░░░░░] 20%
 | Phase 02-overlay-window P02 | 3 | 2 tasks | 10 files |
 | Phase 02-overlay-window P03 | 3 | 2 tasks | 6 files |
 | Phase 03-ocr-pipeline P01 | 298 | 2 tasks | 9 files |
+| Phase 03-ocr-pipeline P02 | 257 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,8 @@ Progress: [██░░░░░░░░] 20%
 - [Phase 02-overlay-window]: BoardStateParser and TFT types are WRONG — built on incorrect API assumptions, need rewrite for OCR data
 - [Phase 03-ocr-pipeline]: Jimp v1.x named export { Jimp } required (not default import)
 - [Phase 03-ocr-pipeline]: Use vi.hoisted() for Vitest mocks referencing top-level variables in vi.mock factory
+- [Phase 03-ocr-pipeline]: ChampionMatcher strips all spaces before similarity comparison to handle both space-insertion and space-removal OCR errors in one normalization pass
+- [Phase 03-ocr-pipeline]: Dual gating in ShopOCR: Tesseract confidence < 60 OR fuzzy ratio < 0.7 yields null apiName
 
 ### Pending Todos
 
@@ -83,6 +86,6 @@ Progress: [██░░░░░░░░] 20%
 
 ## Session Continuity
 
-Last session: 2026-03-13T01:34:19.581Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-03-13T01:41:12.153Z
+Stopped at: Completed 03-02-PLAN.md
 Resume file: None

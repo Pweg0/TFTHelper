@@ -21,7 +21,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **OVER-01**: App exibe overlay transparente always-on-top sobre a janela do TFT
 - [ ] **OVER-02**: Overlay mostra painel completo com todas as informações simultaneamente
-- [ ] **OVER-03**: Overlay destaca campeões na shop que o jogador já possui (camada dourada transparente)
+- [x] **OVER-03**: Overlay destaca campeões na shop que o jogador já possui (camada dourada transparente)
 
 ### Scouting
 
@@ -90,7 +90,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-07 | Phase 2 | Pending |
 | OVER-01 | Phase 2 | Complete |
 | OVER-02 | Phase 4 | Pending |
-| OVER-03 | Phase 3 | Pending |
+| OVER-03 | Phase 3 | Complete |
 | SCOU-01 | Phase 4 | Pending |
 | SCOU-02 | Phase 4 | Pending |
 | SCOU-03 | Phase 4 | Pending |
