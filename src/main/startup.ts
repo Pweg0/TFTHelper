@@ -8,6 +8,7 @@ import { refreshMetaIfStale } from './data/MetaScraper';
 import { GameWatcher } from './game/GameWatcher';
 import { createOverlayWindow } from './overlay/OverlayWindow';
 import { BoardStatePoller } from './overlay/BoardStatePoller';
+import { OCRPipeline } from './ocr/OCRPipeline';
 
 // TODO: Detect locale from Riot client process args (--locale=pt_BR) via LCU API.
 // For now, default to en_us.
@@ -129,13 +130,39 @@ export async function runStartupSequence(win: BrowserWindow): Promise<void> {
     console.warn('[Startup] Meta scrape failed (non-fatal):', err);
   }
 
-  // 7. Signal ready and start game watcher
+  // 7. Initialize OCR pipeline with champion and item data
+  sendStatus(win, 'ocr-init', 'Initializing OCR pipeline...');
+  const ocrPipeline = new OCRPipeline();
+  try {
+    await ocrPipeline.initialize(extractedData.champions, extractedData.items);
+    console.log('[Startup] OCRPipeline initialized');
+  } catch (err) {
+    console.warn('[Startup] OCRPipeline initialization failed (non-fatal):', err);
+  }
+
+  // Register IPC handler for overlay renderer to fetch item icon file:// URLs
+  // Safe to call multiple times — handle only registers once per handler key;
+  // use removeHandler + handle to avoid "handler already registered" on hot reload.
+  ipcMain.removeHandler('get-item-icons');
+  ipcMain.handle('get-item-icons', () => {
+    const record: Record<string, string> = {};
+    for (const item of extractedData.items) {
+      if (item.icon) {
+        // Convert local disk path to file:// URL for use in <img src>
+        record[item.apiName] = `file:///${item.icon.replace(/\\/g, '/')}`;
+      }
+    }
+    return record;
+  });
+
+  // 8. Signal ready and start game watcher
   sendStatus(win, 'ready', 'Ready! Waiting for TFT game...');
 
   // Create overlay window once at startup — attachByTitle can only be called once per process.
   // The overlay shows/hides via attach/detach events from electron-overlay-window.
   const overlayWin = createOverlayWindow();
   const poller = new BoardStatePoller();
+  poller.setOCRPipeline(ocrPipeline);
 
   const watcher = new GameWatcher({
     onGameStart: (data) => {
@@ -156,15 +183,17 @@ export async function runStartupSequence(win: BrowserWindow): Promise<void> {
 
   watcher.start();
 
-  // Clean up watcher and poller when the main window is closed
+  // Clean up watcher, poller, and OCR pipeline when the main window is closed
   win.on('closed', () => {
     watcher.stop();
     poller.stop();
+    void ocrPipeline.terminate();
   });
 
   // Expose store via IPC for shutdown cleanup (optional)
   ipcMain.once('app-quit', () => {
     watcher.stop();
     poller.stop();
+    void ocrPipeline.terminate();
   });
 }
